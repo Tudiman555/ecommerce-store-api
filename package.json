@@ -12,9 +12,9 @@
     "test:coverage": "vitest run --coverage",
     "lint": "biome lint ./src ./tests",
     "format": "biome format --write ./src ./tests",
-    "check": "biome check --write ./src ./tests"
+    "check": "biome check --write ./src ./tests",
+    "prepare": "husky"
   },
-  "keywords": ["ecommerce", "api", "express", "typescript"],
   "author": "",
   "license": "ISC",
   "packageManager": "yarn@1.22.22",
@@ -30,6 +30,9 @@
     "swagger-ui-express": "^5.0.1",
     "zod": "^4.3.6"
   },
+  "resolutions": {
+    "yaml": "^2.4.2"
+  },
   "devDependencies": {
     "@biomejs/biome": "^2.4.9",
     "@types/express": "^5.0.6",
@@ -38,6 +41,7 @@
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
     "@vitest/coverage-v8": "^4.1.2",
+    "husky": "^9.1.7",
     "supertest": "^7.2.2",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
