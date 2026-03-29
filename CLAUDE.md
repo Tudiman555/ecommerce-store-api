@@ -58,11 +58,11 @@ Throw `new AppError('message', statusCode)` from domain functions or routes. The
 ## Commands
 
 ```bash
-npm run dev           # Start with hot reload (tsx watch)
-npm test              # Run all tests once
-npm run test:watch    # Watch mode
-npm run check         # Lint + format (Biome)
-npm run build         # Compile to dist/
+yarn dev              # Start with hot reload (tsx watch)
+yarn test             # Run all tests once
+yarn test:watch       # Watch mode
+yarn check            # Lint + format (Biome)
+yarn build            # Compile to dist/
 ```
 
 ---
@@ -74,7 +74,7 @@ npm run build         # Compile to dist/
 - **Trailing commas**: ES5 style
 - **Indent**: 2 spaces
 - **Line width**: 100 chars max
-- Biome enforces all of the above — run `npm run check` before committing
+- Biome enforces all of the above — run `yarn check` before committing
 
 ---
 

@@ -22,7 +22,7 @@ A RESTful backend API built with Node.js and TypeScript. Supports cart managemen
 **dotenv** Loads environment variables from `.env` into `process.env`
 **swagger-jsdoc** Generates OpenAPI spec from JSDoc comments in route files
 **swagger-ui-express**  Serves an interactive API explorer at `/docs`
-**tsx** Runs TypeScript directly without compiling — used for `npm run dev` hot reload |
+**tsx** Runs TypeScript directly without compiling — used for `yarn dev` hot reload |
 **Vitest** Fast unit and integration test runner with native TypeScript support |
 **supertest** Makes HTTP requests against the Express app in tests without starting a real server
 **@vitest/coverage-v8** Code coverage reports using Node's built-in V8 engine |
@@ -33,7 +33,7 @@ A RESTful backend API built with Node.js and TypeScript. Supports cart managemen
 ## Prerequisites
 
 - Node.js 22 or higher
-- npm 10 or higher
+- Yarn 1.22 or higher
 
 ---
 
@@ -45,7 +45,7 @@ git clone <repo-url>
 cd ecommerce-store
 
 # Install dependencies
-npm install
+yarn install
 
 # Copy environment config
 cp .env.example .env
@@ -65,11 +65,11 @@ cp .env.example .env
 
 ```bash
 # Development (hot reload via tsx watch)
-npm run dev
+yarn dev
 
 # Production (compile first, then run)
-npm run build
-npm start
+yarn build
+yarn start
 ```
 
 Server starts at: `http://localhost:3000`
@@ -90,15 +90,15 @@ http://localhost:3000/docs
 
 | Script | What it does |
 |--------|-------------|
-| `npm run dev` | Start server with hot reload (tsx watch) |
-| `npm run build` | Compile TypeScript to `dist/` |
-| `npm start` | Run compiled output from `dist/` |
-| `npm test` | Run all tests once |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run test:coverage` | Run tests and generate coverage report |
-| `npm run lint` | Check code for lint errors |
-| `npm run format` | Auto-format all source files |
-| `npm run check` | Lint + format together (fix everything) |
+| `yarn dev` | Start server with hot reload (tsx watch) |
+| `yarn build` | Compile TypeScript to `dist/` |
+| `yarn start` | Run compiled output from `dist/` |
+| `yarn test` | Run all tests once |
+| `yarn test:watch` | Run tests in watch mode |
+| `yarn test:coverage` | Run tests and generate coverage report |
+| `yarn lint` | Check code for lint errors |
+| `yarn format` | Auto-format all source files |
+| `yarn check` | Lint + format together (fix everything) |
 
 ---
 
@@ -182,13 +182,13 @@ ecommerce-store/
 
 ```bash
 # Run all tests
-npm test
+yarn test
 
 # Watch mode during development
-npm run test:watch
+yarn test:watch
 
 # With coverage
-npm run test:coverage
+yarn test:coverage
 ```
 
 ---

@@ -17,6 +17,11 @@
   "keywords": ["ecommerce", "api", "express", "typescript"],
   "author": "",
   "license": "ISC",
+  "packageManager": "yarn@1.22.22",
+  "engines": {
+    "npm": "please-use-yarn",
+    "yarn": ">=1.22.0"
+  },
   "type": "commonjs",
   "dependencies": {
     "dotenv": "^17.3.1",
