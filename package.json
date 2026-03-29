@@ -1,0 +1,41 @@
+{
+  "name": "ecommerce-store-api",
+  "version": "1.0.0",
+  "description": "Ecommerce store API with cart, checkout, and discount system",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "biome lint ./src ./tests",
+    "format": "biome format --write ./src ./tests",
+    "check": "biome check --write ./src ./tests"
+  },
+  "keywords": ["ecommerce", "api", "express", "typescript"],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.9",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.5.0",
+    "@types/supertest": "^7.2.0",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@vitest/coverage-v8": "^4.1.2",
+    "supertest": "^7.2.2",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  }
+}
