@@ -4,7 +4,7 @@ import { addItemToCart, getCart } from '../services/cart';
 import { addItemSchema, cartParamsSchema } from '../schemas/cart';
 import { getStore } from '../db';
 
-export const addItem: RequestHandler = (req, res, next) => {
+export const addItemHandler: RequestHandler = (req, res, next) => {
   try {
     // TODO V2: check if user exist or not we don't store user right now 
     const params = cartParamsSchema.safeParse(req.params);

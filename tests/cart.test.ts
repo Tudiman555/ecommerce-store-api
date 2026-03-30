@@ -5,8 +5,8 @@ import type { Product } from '../src/models/product';
 
 function createTestStore(): Store {
   const products = new Map<string, Product>();
-  products.set('prod-1', { id: 'prod-1', name: 'Widget', price: 9.99 });
-  products.set('prod-2', { id: 'prod-2', name: 'Gadget', price: 14.50 });
+  products.set('prod-1', { id: 'prod-1', name: 'Widget', price: 9.99, stock: 10 });
+  products.set('prod-2', { id: 'prod-2', name: 'Gadget', price: 14.50, stock: 10 });
   return {
     products,
     users: new Map(),

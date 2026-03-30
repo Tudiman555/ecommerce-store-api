@@ -7,8 +7,8 @@ import { SEED_PRODUCTS, SEED_USERS } from "../seeder";
 
 export type Store = {
   products: Map<string, Product>;
-  users: Map<string, User>;     // userId -> user fast lookup
-  carts: Map<string, Cart>;     // userId -> cart fast lookup
+  users: Map<string, User>;                  // userId -> user fast lookup
+  carts: Map<string, Cart>;                  // userId -> cart fast lookup
   orders: Order[];
   orderCounter: number;
   discountCodes: Map<string, DiscountCode>;
