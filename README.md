@@ -12,8 +12,6 @@ A RESTful backend API built with Node.js and TypeScript. Supports cart managemen
 | **Express** | HTTP server and routing framework |
 | **Zod** | Runtime request validation + TypeScript type inference from schemas |
 | **dotenv** | Loads environment variables from `.env` into `process.env` |
-| **swagger-jsdoc** | Generates OpenAPI spec from JSDoc comments in route files |
-| **swagger-ui-express** | Serves an interactive API explorer at `/docs` |
 | **tsx** | Runs TypeScript directly without compiling — used for `yarn dev` hot reload |
 | **Vitest** | Fast unit and integration test runner with native TypeScript support |
 | **supertest** | Makes HTTP requests against the Express app in tests without starting a real server |
