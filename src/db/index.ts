@@ -11,6 +11,7 @@ export type Store = {
   carts: Map<string, Cart>;                  // userId -> cart fast lookup
   orders: Order[];
   orderCounter: number;
+  lastClaimedMilestone: number;      // the nth-order milestone (e.g. 5, 10, 15) for which a code was last issued
   discountCodes: Map<string, DiscountCode>;
 };
 
@@ -31,6 +32,7 @@ function createStore(): Store {
     carts: new Map(),
     orders: [],
     orderCounter: 0,
+    lastClaimedMilestone: 0,
     discountCodes: new Map(),
   };
 }

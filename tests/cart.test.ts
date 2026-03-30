@@ -13,6 +13,7 @@ function createTestStore(): Store {
     carts: new Map(),
     orders: [],
     orderCounter: 0,
+    lastClaimedMilestone: 0,
     discountCodes: new Map(),
   };
 }
