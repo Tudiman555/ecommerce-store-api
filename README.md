@@ -49,6 +49,8 @@ cp .env.example .env
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `PORT` | `3000` | Port the server listens on |
+| `NTH_ORDER` | `5` | Every nth order makes a discount code available |
+| `DISCOUNT_PERCENTAGE` | `10` | Percentage discount applied when a code is redeemed |
 
 ---
 
@@ -63,7 +65,7 @@ yarn build
 yarn start
 ```
 
-By default Server starts at: `http://localhost:3000`
+By default the server starts at: `http://localhost:3000`
 
 ---
 
@@ -85,12 +87,27 @@ By default Server starts at: `http://localhost:3000`
 
 ## API Overview
 
+All routes (except `/health`) are prefixed with `/api/v1`.
+
 ### Cart
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/cart/:userId/items` | Add a product to cart |
-| `GET` | `/cart/:userId` | View current cart |
+| Method | Endpoint | Body | Description |
+|--------|----------|------|-------------|
+| `POST` | `/api/v1/cart/:userId/items` | `{ productId, quantity }` | Add a product to cart (merges quantity if already present) |
+| `GET` | `/api/v1/cart/:userId` | — | View current cart with enriched product details and total |
+
+### Checkout
+
+| Method | Endpoint | Body | Description |
+|--------|----------|------|-------------|
+| `POST` | `/api/v1/checkout/:userId` | `{ discountCode? }` | Place an order; optionally apply a discount code |
+
+### Admin
+
+| Method | Endpoint | Body | Description |
+|--------|----------|------|-------------|
+| `POST` | `/api/v1/admin/discount-codes/generate` | — | Generate a discount code if the nth-order condition is met |
+| `GET` | `/api/v1/admin/stats` | — | View total orders, revenue, items purchased, and discounts given |
 
 ### Health
 
@@ -100,35 +117,116 @@ By default Server starts at: `http://localhost:3000`
 
 ---
 
+## Discount System
+
+The store rewards customers with discount codes based on order volume.
+
+### How it works
+
+```
+Every NTH_ORDER orders placed → one discount code becomes available
+Admin generates the code → shares it with a customer
+Customer applies the code at checkout → DISCOUNT_PERCENTAGE% off their total
+Code is single-use — once redeemed it cannot be used again
+```
+
+### Full flow
+
+```
+1. Customers place orders  →  store.orderCounter increments each time
+
+2. Admin calls POST /api/v1/admin/discount-codes/generate
+   - Computes: nextToClaimMilestone = lastClaimedMilestone + NTH_ORDER
+   - Computes: latestMilestone = floor(orderCounter / NTH_ORDER) * NTH_ORDER
+   - Eligible when: nextToClaimMilestone <= latestMilestone
+   - If eligible: generates a code like SAVE-AB3KPQ7R, sets lastClaimedMilestone = nextToClaimMilestone
+   - If not eligible: returns 400 with the order number needed to unlock the next code
+
+3. Admin shares the code with a customer (out of band — email, dashboard, etc.)
+
+4. Customer applies it at checkout:
+   POST /api/v1/checkout/:userId  { "discountCode": "SAVE-AB3KPQ7R" }
+   - discountAmount = subtotal × (DISCOUNT_PERCENTAGE / 100)
+   - total = subtotal - discountAmount
+   - Code is marked used immediately
+
+5. Admin views stats at GET /api/v1/admin/stats
+```
+
+### Late generation and stacking — what if the admin misses milestones?
+
+Missed milestones stack. Each call to the generate endpoint claims the **oldest unclaimed milestone first**. If the admin misses order #5 and #10, both codes can still be generated — one call at a time.
+
+```
+NTH_ORDER = 5
+
+orderCounter=5,  lastClaimedMilestone=0  → nextToClaim=5,  latest=5   → eligible ✓ → lastClaimed=5
+orderCounter=7,  lastClaimedMilestone=0  → nextToClaim=5,  latest=5   → eligible ✓ (late) → lastClaimed=5
+orderCounter=12, lastClaimedMilestone=0  → nextToClaim=5,  latest=10  → eligible ✓ → lastClaimed=5
+orderCounter=12, lastClaimedMilestone=5  → nextToClaim=10, latest=10  → eligible ✓ → lastClaimed=10
+orderCounter=12, lastClaimedMilestone=10 → nextToClaim=15, latest=10  → NOT eligible (need order #15)
+```
+
+### Seeded data
+
+The store starts with the following products:
+
+| ID | Product | Price | Stock |
+|----|---------|-------|-------|
+| `p1` | Wireless Headphones | $79.99 | 50 |
+| `p2` | Mechanical Keyboard | $129.99 | 30 |
+| `p3` | USB-C Hub | $49.99 | 100 |
+| `p4` | Webcam HD | $89.99 | 25 |
+| `p5` | Desk Lamp | $34.99 | 75 |
+
+And three users: `u1`, `u2` (regular), `u3` (admin).
+
+---
+
 ## Project Structure
 
 ```
 ecommerce-store-api/
 ├── src/
-│   ├── config.ts               # Environment config (PORT)
+│   ├── config.ts               # Environment config (PORT, NTH_ORDER, DISCOUNT_PERCENTAGE)
 │   ├── app.ts                  # Express app setup (middleware, routes)
 │   ├── db/
 │   │   └── index.ts            # In-memory store with getStore() / resetStore()
 │   ├── models/
 │   │   ├── cart.ts             # Cart and CartItem types
 │   │   ├── discountCode.ts     # DiscountCode type
-│   │   ├── order.ts            # Order type
-│   │   └── product.ts          # Product type
+│   │   ├── order.ts            # Order and OrderItem types
+│   │   ├── product.ts          # Product type (with stock)
+│   │   └── user.ts             # User type and Role enum
+│   ├── seeder/
+│   │   ├── index.ts            # Re-exports seed data
+│   │   ├── products.ts         # Seed products (p1–p5)
+│   │   └── users.ts            # Seed users (u1–u3)
 │   ├── services/
-│   │   └── cart.ts             # Cart business logic
+│   │   ├── cart.ts             # Cart business logic
+│   │   ├── checkout.ts         # Checkout — validate, apply discount, create order
+│   │   ├── discount.ts         # Discount code generation and validation
+│   │   └── admin.ts            # Admin stats aggregation
 │   ├── controllers/
-│   │   └── cart.ts             # Cart request handlers (validate, call service, respond)
+│   │   ├── cart.ts             # Cart request handlers
+│   │   ├── checkout.ts         # Checkout request handler
+│   │   └── admin.ts            # Admin request handlers
 │   ├── schemas/
-│   │   └── cart/
-│   │       └── cart.ts         # Zod schemas for cart inputs
+│   │   ├── cart.ts             # Zod schemas for cart inputs
+│   │   └── checkout.ts         # Zod schemas for checkout inputs
 │   ├── routes/
 │   │   ├── index.ts            # Central router (mounts sub-routers)
-│   │   └── cart.ts             # Cart route definitions
+│   │   ├── cart.ts             # Cart route definitions
+│   │   ├── checkout.ts         # Checkout route definitions
+│   │   └── admin.ts            # Admin route definitions
 │   ├── middlewares/
 │   │   └── errorHandler.ts     # Global error handler + AppError class
 │   └── utils/
 │       └── logger.ts           # Structured JSON logger
-├── tests/                      # Unit and integration tests
+├── tests/
+│   ├── cart.test.ts            # Cart service unit tests
+│   ├── checkout.test.ts        # Checkout service unit tests
+│   └── discount.test.ts        # Discount service unit tests
 ├── server.ts                   # Entry point — starts the HTTP server
 ├── .env.example                # Environment variable template
 ├── biome.json                  # Biome linter/formatter config
