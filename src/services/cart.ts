@@ -16,7 +16,6 @@ export type CartResponse = {
   total: number;
 };
 
-// TODO: initialize the store inside the constructor
 export function addItemToCart(store: Store, userId: string, productId: string, quantity: number): Cart {
   const product = store.products.get(productId);
   
