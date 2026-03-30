@@ -12,7 +12,7 @@ export const generateDiscountCodeHandler: RequestHandler = (_,res, next) => {
   }
 };
 
-export const getStatsHandler: RequestHandler = (req, res, next) => {
+export const getStatsHandler: RequestHandler = (_, res, next) => {
   try {
     const stats = getAdminStats(getStore());
     res.json(stats);
