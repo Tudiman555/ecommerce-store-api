@@ -1,8 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { addItemToCart, getCart, clearCart } from '../../src/services/cart';
-import { AppError } from '../../src/middlewares/errorHandler';
-import type { Store } from '../../src/db';
-import type { Product } from '../../src/models/product';
+import { addItemToCart, getCart, clearCart } from '../src/services/cart';
+import type { Store } from '../src/db';
+import type { Product } from '../src/models/product';
 
 function createTestStore(): Store {
   const products = new Map<string, Product>();
