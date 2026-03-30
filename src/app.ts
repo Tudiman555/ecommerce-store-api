@@ -1,6 +1,7 @@
 import express from 'express';
 import { logger } from './utils/logger';
 import { errorHandler } from './middlewares/errorHandler';
+import router from './routes';
 
 const app = express();
 
@@ -19,10 +20,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Health check 
+// Health check
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+app.use('/api/v1', router);
 
 // 404 handler
 app.use((_req, res) => {
